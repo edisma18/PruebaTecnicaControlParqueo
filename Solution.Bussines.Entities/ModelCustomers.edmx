@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2005" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Carros">
+          <Key>
+            <PropertyRef Name="Placa" />
+          </Key>
+          <Property Name="Placa" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="EsResidente" Type="bit" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comentari" Type="nvarchar" MaxLength="50" />
+          <Property Name="EsVisitante" Type="bit" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RegistroTiemposParqueo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Placa" Type="nchar" MaxLength="10" Nullable="false" />
+          <Property Name="HoraIngreso" Type="datetime" Nullable="false" />
+          <Property Name="HoraSalida" Type="datetime" />
+          <Property Name="TiempoAcumulado" Type="int" />
+          <Property Name="EstaParqueado" Type="bit" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Customers_Category">
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Customers" Type="Self.Customers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customers">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RegistroTiemposParqueo_Carros">
+          <End Role="Carros" Type="Self.Carros" Multiplicity="1" />
+          <End Role="RegistroTiemposParqueo" Type="Self.RegistroTiemposParqueo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Carros">
+              <PropertyRef Name="Placa" />
+            </Principal>
+            <Dependent Role="RegistroTiemposParqueo">
+              <PropertyRef Name="Placa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="AddCustomers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="varchar" Mode="In" />
+          <Parameter Name="CategoryId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="delCustomers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+          <Parameter Name="CategoryId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="getCustomersByName" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="updCustomers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Id" Type="int" Mode="In" />
+          <Parameter Name="Name" Type="varchar" Mode="In" />
+          <Parameter Name="CategoryId" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="DatabaseModelStoreContainer">
+          <EntitySet Name="Carros" EntityType="Self.Carros" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegistroTiemposParqueo" EntityType="Self.RegistroTiemposParqueo" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Customers_Category" Association="Self.FK_Customers_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Customers" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegistroTiemposParqueo_Carros" Association="Self.FK_RegistroTiemposParqueo_Carros">
+            <End Role="Carros" EntitySet="Carros" />
+            <End Role="RegistroTiemposParqueo" EntitySet="RegistroTiemposParqueo" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DatabaseModel" Alias="Self" xmlns="http://schemas.microsoft.com/ado/2009/11/edm" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="CustomersEntities">
+          <EntitySet Name="Category" EntityType="DatabaseModel.Category" />
+          <EntitySet Name="Customers" EntityType="DatabaseModel.Customers" />
+          <AssociationSet Name="FK_Customers_Category" Association="DatabaseModel.FK_Customers_Category">
+            <End Role="Category" EntitySet="Category" />
+            <End Role="Customers" EntitySet="Customers" />
+          </AssociationSet>
+          <FunctionImport Name="getCustomersByName" EntitySet="Customers" ReturnType="Collection(DatabaseModel.Customers)">
+          <Parameter Name="Name" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="Carros" EntityType="DatabaseModel.Carros" />
+          <EntitySet Name="RegistroTiemposParqueo" EntityType="DatabaseModel.RegistroTiemposParqueo" />
+          <AssociationSet Name="FK_RegistroTiemposParqueo_Carros" Association="DatabaseModel.FK_RegistroTiemposParqueo_Carros">
+            <End Role="Carros" EntitySet="Carros" />
+            <End Role="RegistroTiemposParqueo" EntitySet="RegistroTiemposParqueo" />
+          </AssociationSet></EntityContainer>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Customers" Relationship="DatabaseModel.FK_Customers_Category" FromRole="Category" ToRole="Customers" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Category" Relationship="DatabaseModel.FK_Customers_Category" FromRole="Customers" ToRole="Category" />
+        </EntityType>
+        <Association Name="FK_Customers_Category">
+          <End Role="Category" Type="DatabaseModel.Category" Multiplicity="1" />
+          <End Role="Customers" Type="DatabaseModel.Customers" Multiplicity="*" />
+        </Association>
+        <EntityType Name="Carros">
+          <Key>
+            <PropertyRef Name="Placa" />
+          </Key>
+          <Property Name="Placa" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="EsResidente" Type="Boolean" Nullable="false" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comentari" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RegistroTiemposParqueo" Relationship="DatabaseModel.FK_RegistroTiemposParqueo_Carros" FromRole="Carros" ToRole="RegistroTiemposParqueo" />
+          <Property Name="EsVisitante" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="RegistroTiemposParqueo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Placa" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="HoraIngreso" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HoraSalida" Type="DateTime" Precision="3" />
+          <Property Name="TiempoAcumulado" Type="Int32" />
+          <NavigationProperty Name="Carros" Relationship="DatabaseModel.FK_RegistroTiemposParqueo_Carros" FromRole="RegistroTiemposParqueo" ToRole="Carros" />
+          <Property Name="EstaParqueado" Type="Boolean" />
+        </EntityType>
+        <Association Name="FK_RegistroTiemposParqueo_Carros">
+          <End Type="DatabaseModel.Carros" Role="Carros" Multiplicity="1" />
+          <End Type="DatabaseModel.RegistroTiemposParqueo" Role="RegistroTiemposParqueo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Carros">
+              <PropertyRef Name="Placa" />
+            </Principal>
+            <Dependent Role="RegistroTiemposParqueo">
+              <PropertyRef Name="Placa" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DatabaseModelStoreContainer" CdmEntityContainer="CustomersEntities">
+          <EntitySetMapping Name="Category">
+            <EntityTypeMapping TypeName="IsTypeOf(DatabaseModel.Category)">
+              <MappingFragment StoreEntitySet="Category">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="IsTypeOf(DatabaseModel.Customers)">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+            <EntityTypeMapping TypeName="DatabaseModel.Customers">
+              <ModificationFunctionMapping>
+                <InsertFunction FunctionName="DatabaseModel.Store.AddCustomers">
+                  <AssociationEnd AssociationSet="FK_Customers_Category" From="Customers" To="Category">
+                    <ScalarProperty Name="Id" ParameterName="CategoryId" /></AssociationEnd>
+                  <ScalarProperty Name="Name" ParameterName="Name" />
+                  </InsertFunction>
+                <UpdateFunction FunctionName="DatabaseModel.Store.updCustomers">
+                  <AssociationEnd AssociationSet="FK_Customers_Category" From="Customers" To="Category">
+                    <ScalarProperty Name="Id" ParameterName="CategoryId" Version="Current" /></AssociationEnd>
+                  <ScalarProperty Name="Name" ParameterName="Name" Version="Current" />
+                  <ScalarProperty Name="Id" ParameterName="Id" Version="Original" /></UpdateFunction>
+                <DeleteFunction FunctionName="DatabaseModel.Store.delCustomers">
+                  <AssociationEnd AssociationSet="FK_Customers_Category" From="Customers" To="Category">
+                    <ScalarProperty Name="Id" ParameterName="CategoryId" /></AssociationEnd>
+                  <ScalarProperty Name="Id" ParameterName="Id" /></DeleteFunction></ModificationFunctionMapping></EntityTypeMapping></EntitySetMapping>
+          <AssociationSetMapping Name="FK_Customers_Category" TypeName="DatabaseModel.FK_Customers_Category" StoreEntitySet="Customers">
+            <EndProperty Name="Category">
+              <ScalarProperty Name="Id" ColumnName="CategoryId" />
+            </EndProperty>
+            <EndProperty Name="Customers">
+              <ScalarProperty Name="Id" ColumnName="Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <FunctionImportMapping FunctionImportName="getCustomersByName" FunctionName="DatabaseModel.Store.getCustomersByName" />
+          <EntitySetMapping Name="Carros">
+            <EntityTypeMapping TypeName="DatabaseModel.Carros">
+              <MappingFragment StoreEntitySet="Carros">
+                <ScalarProperty Name="EsVisitante" ColumnName="EsVisitante" />
+                <ScalarProperty Name="Comentari" ColumnName="Comentari" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="EsResidente" ColumnName="EsResidente" />
+                <ScalarProperty Name="Placa" ColumnName="Placa" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegistroTiemposParqueo">
+            <EntityTypeMapping TypeName="DatabaseModel.RegistroTiemposParqueo">
+              <MappingFragment StoreEntitySet="RegistroTiemposParqueo">
+                <ScalarProperty Name="EstaParqueado" ColumnName="EstaParqueado" />
+                <ScalarProperty Name="TiempoAcumulado" ColumnName="TiempoAcumulado" />
+                <ScalarProperty Name="HoraSalida" ColumnName="HoraSalida" />
+                <ScalarProperty Name="HoraIngreso" ColumnName="HoraIngreso" />
+                <ScalarProperty Name="Placa" ColumnName="Placa" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping></EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer>
+    <edmx:Connection>
+      <DesignerInfoPropertySet xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram Name="ModelCustomers" xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+        <EntityTypeShape EntityType="DatabaseModel.Category" Width="1.5" PointX="0.75" PointY="0.875" Height="1.427958984375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DatabaseModel.Customers" Width="1.5" PointX="3" PointY="0.875" Height="1.427958984375" IsExpanded="true" />
+        <AssociationConnector Association="DatabaseModel.FK_Customers_Category" ManuallyRouted="false">
+          <ConnectorPoint PointX="2.25" PointY="1.5889794921875" />
+          <ConnectorPoint PointX="3" PointY="1.5889794921875" /></AssociationConnector>
+        <EntityTypeShape EntityType="DatabaseModel.Carros" Width="1.5" PointX="3.125" PointY="2.75" />
+        <EntityTypeShape EntityType="DatabaseModel.RegistroTiemposParqueo" Width="1.5" PointX="5.375" PointY="2.625" />
+        <AssociationConnector Association="DatabaseModel.FK_RegistroTiemposParqueo_Carros" /></Diagram></edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
